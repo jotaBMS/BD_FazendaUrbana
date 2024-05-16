@@ -1,0 +1,231 @@
+-- Criação do banco de dados
+CREATE DATABASE FazendaUrbana;
+
+-- Utilização do banco de dados criado
+USE FazendaUrbana;
+
+-- Tabela de clientes (1)
+CREATE TABLE TB_Clientes 
+(
+    ID_cliente INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+    Nome_cliente NVARCHAR(100),
+    Telefone_cliente NVARCHAR(20),
+    Endereco_cliente NVARCHAR(200),
+    CpfCnpj_cliente NVARCHAR(20),
+    EndNumero_cliente NVARCHAR(100)
+);
+
+-- Tabela de fornecedores(2)
+CREATE TABLE TB_Fornecedores 
+(
+    ID_fornecedor INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+    Nome_fornecedor NVARCHAR(100),
+    Telefone_fornecedor NVARCHAR(20),
+    Endereco_fornecedor NVARCHAR(200),
+    CpfCnpj_fornecedor NVARCHAR(20),
+    EndNumero_fornecedor NVARCHAR(100)
+);
+
+-- Tabela de produtos(3)
+CREATE TABLE TB_Produtos 
+(
+    ID_produto INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+    Nome_produto NVARCHAR(100),
+    FK_Fornecedor_produto INT,
+    Qtd_estoq_kg INT,
+    CONSTRAINT FK_Fornecedor_produto FOREIGN KEY (FK_Fornecedor_produto) REFERENCES TB_Fornecedores (ID_fornecedor)
+);
+
+-- Tabela de funcionários(4)
+CREATE TABLE TB_Funcionarios 
+(
+    ID_funcionario INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    Nome_funcionario NVARCHAR(100),
+    CPF_funcionario NVARCHAR(20),
+    Cargo_funcionario NVARCHAR(50),
+    Setor_funcionario NVARCHAR(50)
+);
+
+
+-- Tabela de pedidos de compra(5)
+CREATE TABLE TB_PedidosCompra 
+(
+    ID_PedidosCompra INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    
+
+
+    Fornecedor INT,
+    DataPedido DATE,
+    Total_PedidosCompra DECIMAL(10, 2),
+    Status NVARCHAR(50),
+    CONSTRAINT Fornecedor FOREIGN KEY (Fornecedor) REFERENCES TB_Fornecedores(ID_fornecedor)
+);
+
+-- Tabela de itens do pedido de compra (6)
+CREATE TABLE TB_ItensPedidoCompra 
+(
+    ID_ItensPedidoCompra INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    PedidoCompra INT,
+    Produto INT,
+    Quantidade_kg INT,
+    PrecoUnitario DECIMAL(10, 2),
+    CONSTRAINT PedidoCompra FOREIGN KEY (PedidoCompra) REFERENCES TB_PedidosCompra(ID_PedidosCompra),
+    CONSTRAINT Produto FOREIGN KEY (Produto) REFERENCES TB_Produtos(ID_produto)
+);
+
+-- Tabela de vendas (7)
+CREATE TABLE TB_Vendas 
+(
+    ID_Vendas INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+    Cliente INT,
+    DataVenda DATE,
+    Total_Vendas DECIMAL(10, 2),
+    Status NVARCHAR(50),
+    CONSTRAINT Cliente FOREIGN KEY (Cliente) REFERENCES TB_Clientes (ID_cliente)
+);
+
+--inserindo registros de funcionarios 
+insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario)
+VALUES ('jose Miranda', '357.265.684-55', 'gerente', 'vendas');
+insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario)
+VALUES ('Maria Eduarda', '849.518.516.88', 'auxiliar', 'vendas');
+insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario)
+VALUES ('Gustavo Hnrique', '321.654.987-44', 'gerente', 'logistica');
+insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario)
+VALUES ('Iris Bispo', '951.623.874-22', 'auxiliar', 'logistica');
+insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario)
+VALUES ('Ivan Alves', '478.159.236-66', 'office boy', 'adm');
+
+
+/*inserindo registros de Produtos(certo)*/
+insert into TB_Produtos(Nome_produto, Qtd_estoq_kg)
+VALUES ('Tomate', '50');
+insert into TB_Produtos(Nome_produto, Qtd_estoq_kg)
+VALUES ('Uva', '25');
+insert into TB_Produtos(Nome_produto, Qtd_estoq_kg)
+VALUES ('Batata', '60');
+insert into TB_Produtos(Nome_produto, Qtd_estoq_kg)
+VALUES ('Beterraba', '50');
+insert into TB_Produtos(Nome_produto, Qtd_estoq_kg)
+VALUES ('Cebola', '40');
+
+--inserindo registros de Produtos (FK)
+UPDATE TB_Produtos
+SET  FK_Fornecedor_produto = 1
+WHERE Nome_produto = 'Tomate' ;
+UPDATE TB_Produtos
+SET  FK_Fornecedor_produto = 2
+WHERE Nome_produto = 'Uva' ;
+UPDATE TB_Produtos
+SET  FK_Fornecedor_produto = 3
+WHERE Nome_produto = 'Batata' ;
+UPDATE TB_Produtos
+SET  FK_Fornecedor_produto = 4
+WHERE Nome_produto = 'Beterraba' ;
+UPDATE TB_Produtos
+
+
+
+SET  FK_Fornecedor_produto = 5
+WHERE Nome_produto = 'Cebola' ;
+
+--inserindo registros de Fornecedores
+insert into TB_Fornecedores (Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor)
+VALUES ('SEMENTES LTDA', '(11)91111-1111', 'Rua das Sementes','12', '21.321.456/0001-06');
+insert into TB_Fornecedores (Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor)
+VALUES ('HORTALICAS LTDA', '(11)92222-2222', 'Rua das hortalicas','23', '37.321.456/0001-07');
+insert into TB_Fornecedores (Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor)
+VALUES ('GOODGRASS LTDA', '(11)93333-3333', 'Rua dos Gramados', '34', '82.321.456/0001-02');
+insert into TB_Fornecedores (Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor)
+VALUES ('HORTA BOA LTDA', '(11)94444-4444', 'Rua Verdes Pastos','45', '65.321.456/0001-05');
+insert into TB_Fornecedores (Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor)
+VALUES ('TUDO SAUDAVEL LTDA', '(11)955555-5555', 'Rua da Saude','56', '65.321.456/0001-05');
+
+
+
+--inserindo registros de TB_Clientes
+insert into TB_Clientes (Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente)
+VALUES ('HORTIFRUTI DO SEU ZE', '(11)96666-6666', 'Rua Manoel Guerrilheiro','67', '82.321.456/0001-09');
+insert into TB_Clientes (Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente)
+VALUES ('SACOLAO DA NICA', '(11)97777-7777', 'Rua Tamburio Alvarenga','78', '67.321.486/0001-07');
+insert into TB_Clientes (Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente)
+VALUES ('FRUTARIA ALMEIDA', '(11)98888-8888', 'Rua James Bekster','89', '49.321.486/0001-09');
+insert into TB_Clientes (Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente)
+VALUES ('HORTA E CIA', '(11)99999-9999', 'Rua Rua das Mangas','91', '82.321.486/0001-78');
+insert into TB_Clientes (Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente)
+VALUES ('FEIRA 24', '(11)91010-1010', 'Rua Certeira','24', '24.321.486/0001-24');
+
+
+
+--inserindo registros de TB_PedidosCompra
+INSERT INTO TB_PedidosCompra (Fornecedor, DataPedido, Total_PedidosCompra, Status)
+VALUES (1, '2024-05-13', 1500.00, 'Pendente');
+INSERT INTO TB_PedidosCompra (Fornecedor, DataPedido, Total_PedidosCompra, Status)
+VALUES (2, '2024-05-12', 2500.00, 'Em andamento');
+INSERT INTO TB_PedidosCompra (Fornecedor, DataPedido, Total_PedidosCompra, Status)
+VALUES (3, '2024-05-11', 1800.00, 'Concluído');
+INSERT INTO TB_PedidosCompra (Fornecedor, DataPedido, Total_PedidosCompra, Status)
+VALUES (4, '2024-05-10', 3000.00, 'Cancelado');
+INSERT INTO TB_PedidosCompra (Fornecedor, DataPedido, Total_PedidosCompra, Status)
+VALUES (5, '2024-05-09', 2000.00, 'Pendente');
+
+
+--inserindo registros de TB_ItensPedidoCompra
+INSERT INTO TB_ItensPedidoCompra (Quantidade_kg, PrecoUnitario)
+VALUES (10, 5.50); 
+INSERT INTO TB_ItensPedidoCompra (Quantidade_kg, PrecoUnitario)
+VALUES (15, 8.75); 
+INSERT INTO TB_ItensPedidoCompra (Quantidade_kg, PrecoUnitario)
+VALUES (20, 6.25); 
+INSERT INTO TB_ItensPedidoCompra (Quantidade_kg, PrecoUnitario)
+VALUES (12, 10.00); 
+INSERT INTO TB_ItensPedidoCompra (Quantidade_kg, PrecoUnitario)
+VALUES (8, 7.50); 
+
+--inserindo registros de TB_ItensPedidoCompra (FK) (PedidoCompra)
+UPDATE TB_ItensPedidoCompra
+SET  PedidoCompra = 1 
+WHERE ID_ItensPedidoCompra = 16
+UPDATE TB_ItensPedidoCompra
+SET  PedidoCompra = 2
+WHERE ID_ItensPedidoCompra = 17
+UPDATE TB_ItensPedidoCompra
+SET  PedidoCompra = 3
+WHERE ID_ItensPedidoCompra = 18
+UPDATE TB_ItensPedidoCompra
+SET  PedidoCompra = 4
+WHERE ID_ItensPedidoCompra = 19
+UPDATE TB_ItensPedidoCompra
+SET  PedidoCompra = 5
+WHERE ID_ItensPedidoCompra = 20
+
+--inserindo registros de TB_ItensPedidoCompra(FK) (Produto) 
+UPDATE TB_ItensPedidoCompra
+SET  Produto = 11
+WHERE ID_ItensPedidoCompra = 16
+UPDATE TB_ItensPedidoCompra
+SET  Produto = 13
+WHERE ID_ItensPedidoCompra = 17
+UPDATE TB_ItensPedidoCompra
+SET  Produto = 12
+WHERE ID_ItensPedidoCompra = 18
+UPDATE TB_ItensPedidoCompra
+SET  Produto = 15
+WHERE ID_ItensPedidoCompra = 19
+UPDATE TB_ItensPedidoCompra
+SET  Produto = 14
+WHERE ID_ItensPedidoCompra = 20
+
+
+
+--inserindo registros de TB_Vendas
+INSERT INTO TB_Vendas (Cliente, DataVenda, Total_Vendas, Status)
+VALUES (1, '2024-05-13', 500.00, 'Concluída');
+INSERT INTO TB_Vendas (Cliente, DataVenda, Total_Vendas, Status)
+VALUES (2, '2024-05-12', 750.00, 'Pendente');
+INSERT INTO TB_Vendas (Cliente, DataVenda, Total_Vendas, Status)
+VALUES (3, '2024-05-11', 1200.00, 'Concluída');
+INSERT INTO TB_Vendas (Cliente, DataVenda, Total_Vendas, Status)
+VALUES (4, '2024-05-10', 300.00, 'Cancelada');
+INSERT INTO TB_Vendas (Cliente, DataVenda, Total_Vendas, Status)
+VALUES (5, '2024-05-09', 950.00, 'Em andamento');
