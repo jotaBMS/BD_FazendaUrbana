@@ -1,0 +1,35 @@
+--TB_Clientes(1)
+select ID_cliente, Nome_cliente, Telefone_cliente, Endereco_cliente, EndNumero_cliente, CpfCnpj_cliente FROM TB_Clientes;
+--TB_Fornecedores(2)
+select ID_fornecedor, Nome_fornecedor, Telefone_fornecedor, Endereco_fornecedor, EndNumero_fornecedor, CpfCnpj_fornecedor FROM TB_Fornecedores;
+--TB_produto (3)
+select ID_produto, Nome_produto, FK_Fornecedor_produto, Qtd_estoq_kg FROM TB_Produtos;
+--TB_Funcionarios (4)
+select ID_funcionario, Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario FROM TB_Funcionarios ;
+--TB_PedidosCompra (5)
+select ID_PedidosCompra, Fornecedor, DataPedido, Total_PedidosCompra, Status FROM TB_PedidosCompra ;
+--TB_ItensPedidoCompra (6)
+select  ID_ItensPedidoCompra, PedidoCompra, Produto, Quantidade_kg, PrecoUnitario FROM TB_ItensPedidoCompra;
+--TB_Vendas (7)
+select ID_Vendas, Cliente, DataVenda, Total_Vendas, Status FROM TB_Vendas ;
+
+
+--TESTES DE SELECT
+-- selecionando funcionarios do setor de logistica
+SELECT ID_funcionario, Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario 
+FROM TB_Funcionarios 
+WHERE Setor_funcionario = 'logistica';
+
+--selecionando vendas com valor acima de 600 reais 
+SELECT ID_Vendas, Cliente, DataVenda, Total_Vendas 
+FROM TB_Vendas 
+WHERE Total_Vendas > 600;
+
+--selecionando pedidos pendentes
+SELECT ID_PedidosCompra, Fornecedor, DataPedido, Total_PedidosCompra, Status 
+FROM TB_PedidosCompra 
+WHERE Status = 'Pendente';
+
+
+-- Total de Vendas registradas
+select count(Total_Vendas) AS TotalVendas FROM TB_Vendas WHERE Status = 'Concluída'; 
