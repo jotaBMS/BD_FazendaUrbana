@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Threading;
+
+
+namespace PoC
+{
+    class Program
+    {
+        static void Main()
+        {
+            // String de conexão com o banco de dados
+            string connectionString = "Server=DESKTOP-QUCICL3\\SQLEXPRESS;Database=FazendaUrbana; Trusted_Connection=True"; // User Id=seu_usuario;Password=sua_senha;";
+
+            // Solicitar dados ao usuário
+            Console.Write("nome do funcionario: ");
+            string Nome_funcionario = Console.ReadLine();
+
+            Console.Write("CPF do funcionario: ");
+            string CPF_funcionario = Console.ReadLine();
+
+            Console.Write("Cargo do funcionario: ");
+            string Cargo_funcionario = Console.ReadLine();
+
+            Console.Write("Setor do funcionario: ");
+            string Setor_funcionario = Console.ReadLine();
+
+
+            // Inserir dados na tabela
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string insertQuery = "insert into TB_Funcionarios (Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario) VALUES (@Nome_funcionario, @CPF_funcionario, @Cargo_funcionario, @Setor_funcionario)";
+                using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@Nome_funcionario", Nome_funcionario);
+                    insertCommand.Parameters.AddWithValue("@CPF_funcionario", CPF_funcionario);
+                    insertCommand.Parameters.AddWithValue("@Cargo_funcionario", Cargo_funcionario);
+                    insertCommand.Parameters.AddWithValue("@Setor_funcionario", Setor_funcionario);
+
+
+                    int rowsAffected = insertCommand.ExecuteNonQuery();
+                    Console.WriteLine($"{rowsAffected} registro(s) inserido(s).");
+                }
+
+                // Selecionar e exibir dados inseridos
+                string selectQuery = "select ID_funcionario, Nome_funcionario, CPF_funcionario, Cargo_funcionario, Setor_funcionario FROM TB_Funcionarios WHERE CPF_funcionario = @CPF_funcionario";
+                using (SqlCommand selectCommand = new SqlCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@CPF_funcionario", CPF_funcionario);
+
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string nomeLido = reader.GetString(1);
+                            string CPFLido = reader.GetString(2);
+                            string CargoLido = reader.GetString(3);
+                            string SetorLido = reader.GetString(4);
+
+                            Console.WriteLine($"Id: {id}, Nome: {nomeLido}, CPF: {CPFLido}, Setor: {SetorLido},");
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("Funcionario cadastrado com sucesso!");
+            Console.ReadLine();
+        }
+    }
+
+
